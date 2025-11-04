@@ -14,7 +14,7 @@ drush cim --no-interaction
 drush cim --no-interaction
 
 # Sanitize the database (non-production only).
-if [[ -v $AH_NON_PRODUCTION ]]; then
+if [[ -v AH_NON_PRODUCTION ]]; then
   drush sql-sanitize \
     --sanitize-email=%name@example.com \
     --sanitize-password=no
