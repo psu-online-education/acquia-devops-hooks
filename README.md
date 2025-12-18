@@ -33,7 +33,7 @@ For example, to enable the post-code-deploy workflow:
 # Relative to the application project root
 mkdir -p hooks/common/post-code-deploy
 ln -s \
-  ../../../vendor/lal65/acquia-devops-hooks/common/post-code-deploy/post-code-deploy.sh \
+  ../../../vendor/psu-online-education/acquia-devops-hooks/common/post-code-deploy/post-code-deploy.sh \
    hooks/common/post-code-deploy/000-post-code-deploy.sh
 ```
 
