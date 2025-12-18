@@ -17,7 +17,7 @@ cf_credentials="/mnt/gfs/$AH_SITE_NAME/nobackup/.cloudflare/credentials.json"
 
 if [ -f "$cf_credentials" ]; then
 
-  zone="$(jq -r '.zone' $cf_credentials)"
+  zone="$(jq -r '.zoneid' $cf_credentials)"
   email="$(jq -r '.email' $cf_credentials)"
   apikey="$(jq -r '.apikey' $cf_credentials)"
 
