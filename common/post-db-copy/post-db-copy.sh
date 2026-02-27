@@ -34,25 +34,20 @@ cf_credentials="/mnt/gfs/$AH_SITE_NAME/nobackup/.cloudflare/credentials.json"
 
 if [ -f "$cf_credentials" ]; then
 
-  # @TODO: Refactor away python when we don't have to support cloud classic.
-  read zone email apikey < <(python3 -c '
-import json
-data = json.load(open("'"$cf_credentials"'"))
-print(data.get("zoneid", ""), data.get("email", ""), data.get("apikey", ""))')
+  zone="$(jq -r '.zoneid' $cf_credentials)"
+  email="$(jq -r '.email' $cf_credentials)"
+  apikey="$(jq -r '.apikey' $cf_credentials)"
 
   # Flush CDN cache.
-  raw_result=$(curl -sX POST "https://api.cloudflare.com/client/v4/zones/$zone/purge_cache" \
+  raw_result=$(
+    curl -sX POST "https://api.cloudflare.com/client/v4/zones/$zone/purge_cache" \
     -H "X-Auth-Email: $email" \
     -H "X-Auth-Key: $apikey" \
     -H "Content-Type: application/json" \
-    -d "{\"hosts\": [\"$domain\"]}")
+    -d "{\"hosts\": [\"$domain\"]}"
+  )
 
   echo "$raw_result"
 
-  result=$(python3 -c '
-import json
-data = json.loads('\'"$raw_result"\'')
-print(str(data.get("success")).lower())')
-
-  [[ "$result" == "true" ]]
+  [[ "$(jq -r '.success' <<< "$raw_result")" == "true" ]]
 fi
