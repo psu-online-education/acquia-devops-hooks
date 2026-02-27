@@ -98,18 +98,11 @@ configuration file in a specific place on the Acquia environment disk.
 
 [Storing private information in the file system](https://docs.acquia.com/acquia-cloud-platform/storing-private-information-file-system)
 outlines how to use the `nobackup` directory to securely store certain
-credentials.  To enable CDN purging, simply add a file at
-`/mnt/gfs/$AH_SITE_NAME/nobackup/.cloudflare/credentials.json` on each
-environment that should have CDN purging enabled on it. The contents of this
-configuration file should match this format:
-
-```json
-{
-  "email": "your-cloudflare-service-account-user@psu.edu",
-  "apikey": "your cloudflare service account api key",
-  "zoneid": "your cloudflare zone id"
-}
-```
+credentials.  To enable CDN purging, simply add two files at
+`/mnt/gfs/$AH_SITE_NAME/nobackup/cloudflare.zone` and
+`/mnt/gfs/$AH_SITE_NAME/nobackup/cloudflare.key` on each environment that
+should have CDN purging enabled on it. The contents of the files should contain
+the cloudflare zone and API token, respectively.
 
 <sup>[1]</sup> Some configuration changes require two synchronizations.  For
 example, if configuration split or ignore settings are modified.
