@@ -13,19 +13,15 @@ domain=$(drush php:eval "echo \Drupal::service('settings')->get('current_fqdn');
 drush p:invalidate everything --uri="$domain" --no-interaction
 
 # If there are Cloudflare credentials configured, flush the CDN cache.
-cf_credentials="/mnt/gfs/$AH_SITE_NAME/nobackup/.cloudflare/credentials.json"
+cf_zone="/mnt/gfs/$AH_SITE_NAME/nobackup/cloudflare.zone"
+cf_key="/mnt/gfs/$AH_SITE_NAME/nobackup/cloudflare.key"
 
-if [ -f "$cf_credentials" ]; then
-
-  zone="$(jq -r '.zoneid' $cf_credentials)"
-  email="$(jq -r '.email' $cf_credentials)"
-  apikey="$(jq -r '.apikey' $cf_credentials)"
+if [ -f "$cf_zone" ] && [ -f "$cf_key" ]; then
 
   # Flush CDN cache.
   raw_result=$(
-    curl -sX POST "https://api.cloudflare.com/client/v4/zones/$zone/purge_cache" \
-    -H "X-Auth-Email: $email" \
-    -H "X-Auth-Key: $apikey" \
+    curl -sX POST "https://api.cloudflare.com/client/v4/zones/$(cat "$cf_zone")/purge_cache" \
+    -H "Authorization: Bearer $(cat "$cf_key")" \
     -H "Content-Type: application/json" \
     -d "{\"hosts\": [\"$domain\"]}"
   )
